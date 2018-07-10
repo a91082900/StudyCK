@@ -300,6 +300,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
+    @Override
+    protected void onDestroy() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Network.requestPost(Network.LOGOUT_URI, new HashMap<String, String>());
+            }
+        }).start();
+        super.onDestroy();
+    }
 }

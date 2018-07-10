@@ -28,6 +28,7 @@ import java.util.Set;
 
 public class Network {
     public static final String LOGIN_URI = "http://study.ck.tp.edu.tw/login_chk.asp";
+    public static final String LOGOUT_URI = "http://study.ck.tp.edu.tw/logout.asp";
 
     public static String uploadFile(String sourceFileUri, InputStream in, String uploadFileName) {
 
