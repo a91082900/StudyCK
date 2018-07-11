@@ -12,12 +12,21 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.provider.DocumentFile;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Layout;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,14 +57,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final int PICK_FILE_REQUEST = 0;
     private static final int LOGIN = 1;
     TextView messageText;
     Button uploadButton, choose;
     EditText editFileName;
-    int serverResponseCode = 0;
 
     String uploadServerUri = null;
     InputStream in;
@@ -67,17 +76,43 @@ public class MainActivity extends AppCompatActivity {
 
     KeyStoreHelper keyStoreHelper;
     SharedPreferencesHelper preferencesHelper;
+    private View header;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Log.e("Directory", uploadFilePath);
         uploadButton = findViewById(R.id.uploadButton);
         choose = findViewById(R.id.choose);
-        messageText  = findViewById(R.id.messageText);
+        messageText = findViewById(R.id.messageText);
         editFileName = findViewById(R.id.fileName);
         button3 = findViewById(R.id.button3);
+
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        header = navigationView.getHeaderView(0);
 
         CookieManager manager = new CookieManager();
         CookieHandler.setDefault(manager);
@@ -136,10 +171,9 @@ public class MainActivity extends AppCompatActivity {
         String encryptedText = preferencesHelper.getInput();
         final String mEmail = preferencesHelper.getString(SharedPreferencesHelper.PREF_AC);
         final String mPassword = keyStoreHelper.decrypt(encryptedText);
-        if(mEmail.equals("") || mPassword.equals("")){
+        if (mEmail.equals("") || mPassword.equals("")) {
             callLogin(mEmail, mPassword);
-        }
-        else{
+        } else {
             final Map<String, String> param = new HashMap<>();
             param.put("f_uid", mEmail);
             param.put("f_pwd", mPassword);
@@ -157,10 +191,9 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if(!loginResponse.contains("錯誤")){
+                            if (!loginResponse.contains("錯誤")) {
                                 LoginSuccess(mEmail, mPassword);
-                            }
-                            else{
+                            } else {
                                 Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_SHORT).show();
                                 callLogin(mEmail, mPassword);
                             }
@@ -185,10 +218,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void LoginSuccess(String account, String password) {
         View layout = findViewById(android.R.id.content);
+        TextView navName = header.findViewById(R.id.userName);
+        TextView navAccount = header.findViewById(R.id.userAccount);
         Toast.makeText(getApplicationContext(), "登入成功！！", Toast.LENGTH_SHORT).show();
         Document doc = Jsoup.parse(loginResponse);
         String name =  doc.select("form > font").first().text();
         messageText.setText(name);
+        name = name.substring(0, name.length()-2); // 扣除 "您好"
+        navName.setText(name);
+        navAccount.setText(account);
 
         // Save Login Information
         String encryptedPassword = keyStoreHelper.encrypt(password);
@@ -206,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
         //allows to select data and return it
         intent.setAction(Intent.ACTION_GET_CONTENT);
         //starts new activity to select file and return data
-        startActivityForResult(Intent.createChooser(intent,"Choose File to Upload.."), PICK_FILE_REQUEST);
+        startActivityForResult(Intent.createChooser(intent, "Choose File to Upload.."), PICK_FILE_REQUEST);
     }
 
     private boolean isVirtualFile(Uri uri) {
@@ -216,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
 
         Cursor cursor = getContentResolver().query(
                 uri,
-                new String[] { DocumentsContract.Document.COLUMN_FLAGS },
+                new String[]{DocumentsContract.Document.COLUMN_FLAGS},
                 null, null, null);
 
         int flags = 0;
@@ -249,9 +287,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode){
+        switch (requestCode) {
             case PICK_FILE_REQUEST:
-                if(resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     if (data == null) {
                         //no data present
                         return;
@@ -286,8 +324,8 @@ public class MainActivity extends AppCompatActivity {
             }*/
                 break;
             case LOGIN:
-                if(resultCode == RESULT_OK){
-                    Bundle bundle =  data.getExtras();
+                if (resultCode == RESULT_OK) {
+                    Bundle bundle = data.getExtras();
                     String account = bundle.getString("account");
                     String password = bundle.getString("password");
                     loginResponse = bundle.getString("response");
@@ -309,5 +347,61 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
         super.onDestroy();
+    }
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }
