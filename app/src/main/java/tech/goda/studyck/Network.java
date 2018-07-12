@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.DocumentsContract;
 import android.support.v4.provider.DocumentFile;
@@ -19,6 +22,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,6 +33,7 @@ import java.util.Set;
 public class Network {
     public static final String LOGIN_URI = "http://study.ck.tp.edu.tw/login_chk.asp";
     public static final String LOGOUT_URI = "http://study.ck.tp.edu.tw/logout.asp";
+    public static final String CHANGE_PWD_URI = "https://ldap.ck.tp.edu.tw/admin/chpass.php";
 
     public static String uploadFile(String sourceFileUri, InputStream in, String uploadFileName) {
 
@@ -377,6 +382,88 @@ public class Network {
         return response;
     }
 
+    public static String httpsRequestPost(String uri, Map<String, String> params){
+        URLConnection conn;
+        DataOutputStream dos;
+        String response = null;
+        try {
+            // open a URL connection to the Servlet
+            URL url = new URL(uri);
+            // Open a HTTP  connection to  the URL
+            conn = url.openConnection();
+            conn.setDoInput(true); // Allow Inputs
+            conn.setDoOutput(true); // Allow Outputs
+            conn.setUseCaches(false); // Don't use a Cached Copy
+            conn.setRequestProperty("Connection", "Keep-Alive");
+            dos = new DataOutputStream(conn.getOutputStream());
 
+            Set keySet = params.keySet();
+            StringBuilder sb = new StringBuilder();
+            for (Object objKey : keySet) {
+                //有了鍵就可以通過map集合的get方法獲取其對應的値
+
+                String key = objKey.toString();
+                String value = params.get(key);
+
+                sb.append(key).append("=").append(value).append("&");
+
+                Log.e("Params", "key: " + key + ", value: " + value);
+            }
+            if(params.size() != 0){
+                sb.deleteCharAt(sb.length()-1);
+            }
+
+            Log.e("StringBuilder", sb.toString());
+            dos.writeBytes(sb.toString());
+            
+
+            // Responses from the server (code and message)
+
+            try{
+                BufferedReader br;
+                br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
+                sb = new StringBuilder();
+                String output;
+                while ((output = br.readLine()) != null) {
+                    sb.append(output);
+                }
+                response = sb.toString();
+                Log.e("Response", response);
+            } catch(java.io.IOException e){
+                e.printStackTrace();
+            }
+
+
+            dos.flush();
+            dos.close();
+
+        } catch (MalformedURLException e) {
+
+            e.printStackTrace();
+            Log.e("Upload file to server", "error: " + e.getMessage(), e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("Upload", "Exception : "
+                    + e.getMessage(), e);
+        }
+        return response;
+    }
+    public static Drawable getDrawable(String imageUrl)
+    {
+        try
+        {
+            URL url = new URL(imageUrl);
+            URLConnection connection = url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            return Drawable.createFromStream(input, imageUrl);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }

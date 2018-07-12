@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <!--group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_camera"
             android:icon="@drawable/ic_menu_camera"
@@ -20,18 +20,46 @@
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
             android:title="Tools" />
-    </group>
+    </group-->
 
-    <item android:title="Communicate">
+    <item android:title="檔案資源">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:id="@+id/nav_file"
+                android:title="檔案" />
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:id="@+id/nav_site"
+                android:title="網站" />
+        </menu>
+    </item>
+
+    <item android:title="作業專區">
+        <menu>
+            <item
+                android:id="@+id/nav_homework"
+                android:title="繳交作業" />
+        </menu>
+    </item>
+
+    <item android:title="其他">
+        <menu>
+            <item
+                android:id="@+id/nav_email"
+                android:title="家長Email登錄" />
+            <item
+                android:id="@+id/nav_schedule"
+                android:title="課表查詢(外部連結)" />
+        </menu>
+    </item>
+
+    <item android:title="個人專區">
+        <menu>
+            <item
+                android:id="@+id/nav_info"
+                android:title="個人資訊" />
+            <item
+                android:id="@+id/nav_passwd"
+                android:title="修改密碼" />
         </menu>
     </item>
 

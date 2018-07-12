@@ -7,6 +7,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -22,40 +25,24 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.Layout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.CookieHandler;
 import java.net.CookieManager;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.KeyStore;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -65,6 +52,7 @@ public class MainActivity extends AppCompatActivity
     TextView messageText;
     Button uploadButton, choose;
     EditText editFileName;
+    ImageView imageView;
 
     String uploadServerUri = null;
     InputStream in;
@@ -89,19 +77,12 @@ public class MainActivity extends AppCompatActivity
         messageText = findViewById(R.id.messageText);
         editFileName = findViewById(R.id.fileName);
         button3 = findViewById(R.id.button3);
+        imageView = findViewById(R.id.imageView);
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -386,19 +367,38 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_file) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_site) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_homework) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_email) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_schedule) {
 
+        } else if (id == R.id.nav_info) {
+
+        } else if (id == R.id.nav_passwd) {
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Network.httpsRequestPost(Network.CHANGE_PWD_URI, new HashMap<String, String>());
+                    final Drawable drawable = Network.getDrawable("https://ldap.ck.tp.edu.tw/admin/code.php");
+                    Log.e("TAG", String.valueOf(drawable==null));
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.e("TAG_INSIDE", String.valueOf(drawable==null));
+                            imageView.setImageDrawable(drawable);
+                        }
+                    });
+                }
+
+            }).start();
         }
+        Toast.makeText(getApplicationContext(), "你點選了！！", Toast.LENGTH_SHORT).show();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
