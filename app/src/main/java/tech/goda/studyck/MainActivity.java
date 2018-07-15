@@ -18,6 +18,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.provider.DocumentFile;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -49,22 +51,25 @@ public class MainActivity extends AppCompatActivity
 
     private static final int PICK_FILE_REQUEST = 0;
     private static final int LOGIN = 1;
-    TextView messageText;
+    /*TextView messageText;
     Button uploadButton, choose;
     EditText editFileName;
     ImageView imageView;
 
     String uploadServerUri = null;
     InputStream in;
-    String fileName;
+    Button button3;
+    String fileName;*/
     String loginResponse;
     /**********  File Path *************/
     String uploadFilePath = Environment.getExternalStorageDirectory().getPath() + "/test.png";
-    Button button3;
+
 
     KeyStoreHelper keyStoreHelper;
     SharedPreferencesHelper preferencesHelper;
     private View header;
+    private TextView navAccount;
+    private TextView navName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +77,12 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         Log.e("Directory", uploadFilePath);
-        uploadButton = findViewById(R.id.uploadButton);
+        /*uploadButton = findViewById(R.id.uploadButton);
         choose = findViewById(R.id.choose);
         messageText = findViewById(R.id.messageText);
         editFileName = findViewById(R.id.fileName);
         button3 = findViewById(R.id.button3);
-        imageView = findViewById(R.id.imageView);
+        imageView = findViewById(R.id.imageView);*/
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -101,7 +106,7 @@ public class MainActivity extends AppCompatActivity
         preferencesHelper = new SharedPreferencesHelper(getApplicationContext());
         keyStoreHelper = new KeyStoreHelper(getApplicationContext(), preferencesHelper);
 
-        messageText.setText("Uploading file path : " + uploadFilePath);
+        /*messageText.setText("Uploading file path : " + uploadFilePath);
 
 
         //uploadServerUri = "http://study.ck.tp.edu.tw/login_chk.asp";
@@ -147,7 +152,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 showFileChooser();
             }
-        });
+        });*/
 
         String encryptedText = preferencesHelper.getInput();
         final String mEmail = preferencesHelper.getString(SharedPreferencesHelper.PREF_AC);
@@ -199,12 +204,12 @@ public class MainActivity extends AppCompatActivity
 
     private void LoginSuccess(String account, String password) {
         View layout = findViewById(android.R.id.content);
-        TextView navName = header.findViewById(R.id.userName);
-        TextView navAccount = header.findViewById(R.id.userAccount);
+        navName = header.findViewById(R.id.userName);
+        navAccount = header.findViewById(R.id.userAccount);
         Toast.makeText(getApplicationContext(), "登入成功！！", Toast.LENGTH_SHORT).show();
         Document doc = Jsoup.parse(loginResponse);
         String name =  doc.select("form > font").first().text();
-        messageText.setText(name);
+        //messageText.setText(name);
         name = name.substring(0, name.length()-2); // 扣除 "您好"
         navName.setText(name);
         navAccount.setText(account);
@@ -270,7 +275,7 @@ public class MainActivity extends AppCompatActivity
 
         switch (requestCode) {
             case PICK_FILE_REQUEST:
-                if (resultCode == RESULT_OK) {
+                /*if (resultCode == RESULT_OK) {
                     if (data == null) {
                         //no data present
                         return;
@@ -285,10 +290,10 @@ public class MainActivity extends AppCompatActivity
 
                     try {
                         if (isVirtualFile(selectedFileUri)) {
-                            Log.e("GetPath", "This is virtual file");
-                            in = getInputStreamForVirtualFile(selectedFileUri, "*/*");
+                            Log.e("GetPath", "This is virtual file");*/
+                            //in = getInputStreamForVirtualFile(selectedFileUri, "*/*");
 
-                        } else {
+                        /*} else {
                             in = getContentResolver().openInputStream(selectedFileUri);
                         }
 
@@ -297,7 +302,7 @@ public class MainActivity extends AppCompatActivity
                         e.printStackTrace();
                         Log.e("GetPathError", e.toString());
                     }
-                }
+                }*/
             /*if(uploadFilePath != null && !uploadFilePath.equals("")){
                 messageText.setText(uploadFilePath);
             }else{
@@ -361,12 +366,13 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        Fragment fragment = null;
+        Bundle bundle = new Bundle();
         if (id == R.id.nav_file) {
 
         } else if (id == R.id.nav_site) {
@@ -380,23 +386,17 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_info) {
 
         } else if (id == R.id.nav_passwd) {
+            fragment = new ChpassFragment();
+            String account = navAccount.getText().toString();
+            bundle.putString("account", account);
+        }
+        setTitle(item.getTitle());
+        if (fragment != null) {
+            fragment.setArguments(bundle);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, fragment);
+            ft.commit();
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Network.httpsRequestPost(Network.CHANGE_PWD_URI, new HashMap<String, String>());
-                    final Drawable drawable = Network.getDrawable("https://ldap.ck.tp.edu.tw/admin/code.php");
-                    Log.e("TAG", String.valueOf(drawable==null));
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.e("TAG_INSIDE", String.valueOf(drawable==null));
-                            imageView.setImageDrawable(drawable);
-                        }
-                    });
-                }
-
-            }).start();
         }
         Toast.makeText(getApplicationContext(), "你點選了！！", Toast.LENGTH_SHORT).show();
 

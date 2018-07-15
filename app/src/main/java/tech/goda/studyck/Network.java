@@ -34,6 +34,8 @@ public class Network {
     public static final String LOGIN_URI = "http://study.ck.tp.edu.tw/login_chk.asp";
     public static final String LOGOUT_URI = "http://study.ck.tp.edu.tw/logout.asp";
     public static final String CHANGE_PWD_URI = "https://ldap.ck.tp.edu.tw/admin/chpass.php";
+    public static final String CHANGE_PWD_CODE = "https://ldap.ck.tp.edu.tw/admin/code.php";
+    public static final String CHANGE_PWD_SAVE = "https://ldap.ck.tp.edu.tw/admin/chpass_save.php";
 
     public static String uploadFile(String sourceFileUri, InputStream in, String uploadFileName) {
 
