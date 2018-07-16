@@ -172,16 +172,22 @@ public class MainActivity extends AppCompatActivity
                 public void run() {
                     loginResponse = Network.requestPost(Network.LOGIN_URI, param);
                     //Thread.sleep(2000);
-                    Log.e("Login", loginResponse);
+
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (!loginResponse.contains("錯誤")) {
-                                LoginSuccess(mEmail, mPassword);
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_SHORT).show();
+                            if(loginResponse == null){
+                                Toast.makeText(getApplicationContext(), "網路異常", Toast.LENGTH_SHORT).show();
                                 callLogin(mEmail, mPassword);
+                            }
+                            else{
+                                if (!loginResponse.contains("錯誤")) {
+                                    LoginSuccess(mEmail, mPassword);
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_SHORT).show();
+                                    callLogin(mEmail, mPassword);
+                                }
                             }
                         }
                     });

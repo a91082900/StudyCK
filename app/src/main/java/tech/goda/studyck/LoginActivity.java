@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.provider.SearchRecentSuggestions;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -32,7 +33,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +68,7 @@ public class LoginActivity extends AppCompatActivity  {
     private View mProgressView;
     private View mLoginFormView;
     private String response = null;
+    private boolean netFlag = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -271,8 +272,10 @@ public class LoginActivity extends AppCompatActivity  {
             param.put("f_uid", mEmail);
             param.put("f_pwd", mPassword);
             response = Network.requestPost(LOGIN_URI, param);
-            //Thread.sleep(2000);
-            Log.e("Login", response);
+            if(response == null) {
+                netFlag = false;
+                return false;
+            }
             return !response.contains("錯誤");
 
         }
@@ -290,8 +293,12 @@ public class LoginActivity extends AppCompatActivity  {
                 setResult(RESULT_OK, intent);
                 finish();
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                if(!netFlag)
+                    Toast.makeText(getApplicationContext(), "網路異常", Toast.LENGTH_SHORT).show();
+                else{
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                }
             }
         }
 

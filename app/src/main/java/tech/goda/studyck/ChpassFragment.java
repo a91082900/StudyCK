@@ -117,26 +117,28 @@ public class ChpassFragment extends Fragment {
                             @Override
                             public void run() {
                                 String str = "";
-                                Document doc = Jsoup.parse(response);
-                                if(!doc.select(".msg_no").isEmpty()){
-                                    Element error = doc.selectFirst(".msg_no").selectFirst("p");
-                                    str = error.text();
-                                }
-                                else if(!doc.select(".msg_yes").isEmpty()){
-                                    Element success = doc.selectFirst(".msg_yes").selectFirst("p");
-                                    str = success.text();
-                                    // TODO: switch fragment  here
-                                    /*Fragment fragment = new ChpassFragment();
-                                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                                    ft.replace(R.id.content_frame, fragment);
-                                    ft.commit();*/
-                                }
-                                else{
-                                    str = "驗證碼錯誤";
-                                }
-                                Toast.makeText(getContext(), str, Toast.LENGTH_SHORT).show();
+                                if(response == null)
+                                    Toast.makeText(getContext(), "網路異常", Toast.LENGTH_SHORT).show();
+                                else {
+                                    Document doc = Jsoup.parse(response);
+                                    if (!doc.select(".msg_no").isEmpty()) {
+                                        Element error = doc.selectFirst(".msg_no").selectFirst("p");
+                                        str = error.text();
+                                    } else if (!doc.select(".msg_yes").isEmpty()) {
+                                        Element success = doc.selectFirst(".msg_yes").selectFirst("p");
+                                        str = success.text();
+                                        // TODO: switch fragment  here
+                                        /*Fragment fragment = new ChpassFragment();
+                                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                        ft.replace(R.id.content_frame, fragment);
+                                        ft.commit();*/
+                                    } else {
+                                        str = "驗證碼錯誤";
+                                    }
+                                    Toast.makeText(getContext(), str, Toast.LENGTH_SHORT).show();
 
-                                Log.e("TAG_INSIDE", response);
+                                    Log.e("TAG_INSIDE", response);
+                                }
                             }
                         });
                     }
