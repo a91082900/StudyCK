@@ -10,7 +10,6 @@
     <!-- TODO: Update blank fragment layout -->
 
     <ScrollView
-        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -26,28 +25,15 @@
                 android:id="@+id/button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="24dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:text="送出"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/L5" />
-
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="200dp"
-                android:layout_height="53dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:scaleType="fitCenter"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/L4" />
-
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/L"
@@ -61,11 +47,11 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <EditText
-                    android:id="@+id/account"
+                    android:id="@+id/name1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
-                    android:hint="帳號"
+                    android:hint="家長1"
+                    android:inputType="text"
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
@@ -82,14 +68,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/L">
 
                 <EditText
-                    android:id="@+id/passwordOld"
+                    android:id="@+id/email1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="舊密碼"
+                    android:hint="Email1"
                     android:imeActionId="6"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
-                    android:inputType="textPassword"
+                    android:inputType="text|textEmailAddress"
                     android:maxLines="1"
                     android:singleLine="true" />
 
@@ -107,14 +93,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/L2">
 
                 <EditText
-                    android:id="@+id/passwordNew"
+                    android:id="@+id/name2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="新密碼"
+                    android:hint="家長2"
                     android:imeActionId="6"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
-                    android:inputType="textPassword"
+                    android:inputType="text"
                     android:maxLines="1"
                     android:singleLine="true" />
 
@@ -126,50 +112,24 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/L3">
 
                 <EditText
-                    android:id="@+id/passwordConf"
+                    android:id="@+id/email2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="新密碼(再確認)"
+                    android:hint="Email2"
                     android:imeActionId="6"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
-                    android:inputType="textPassword"
+                    android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/L5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView">
-
-                <EditText
-                    android:id="@+id/code"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="驗證碼"
-                    android:imeActionId="6"
-                    android:imeActionLabel="@string/action_sign_in_short"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-
-            </android.support.design.widget.TextInputLayout>
-
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 

@@ -36,6 +36,7 @@ public class Network {
     public static final String CHANGE_PWD_URI = "https://ldap.ck.tp.edu.tw/admin/chpass.php";
     public static final String CHANGE_PWD_CODE = "https://ldap.ck.tp.edu.tw/admin/code.php";
     public static final String CHANGE_PWD_SAVE = "https://ldap.ck.tp.edu.tw/admin/chpass_save.php";
+    public static final String PARENT_EMAIL = "http://study.ck.tp.edu.tw/mail_par_regist_form.asp?f_mnuid=g";
 
     public static String uploadFile(String sourceFileUri, InputStream in, String uploadFileName) {
 

@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.support.annotation.NonNull;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -43,6 +44,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.CookieHandler;
 import java.net.CookieManager;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,6 +72,8 @@ public class MainActivity extends AppCompatActivity
     private View header;
     private TextView navAccount;
     private TextView navName;
+    private Fragment mCurrentFragment = null;
+    private ArrayList<Fragment> fragmentArrayList = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -227,6 +231,10 @@ public class MainActivity extends AppCompatActivity
 
         layout.setVisibility(View.VISIBLE);
 
+        fragmentArrayList = new ArrayList<Fragment>();
+
+        changeFragment(R.id.nav_home);
+
     }
 
     private void showFileChooser() {
@@ -377,37 +385,76 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        //item.setChecked(true);
+        Toast.makeText(getApplicationContext(), "你點選了"+item.toString(), Toast.LENGTH_SHORT).show();
+
+        changeFragment(id);
+        setTitle(item.getTitle());
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+    void changeFragment(int id){
         Fragment fragment = null;
         Bundle bundle = new Bundle();
-        if (id == R.id.nav_file) {
-
+        if (id == R.id.nav_home) {
+            fragment = new HomeFragment();
+        } else if (id == R.id.nav_file) {
+            fragment = new FileFragment();
         } else if (id == R.id.nav_site) {
-
+            fragment = new SiteFragment();
         } else if (id == R.id.nav_homework) {
-
+            fragment = new HomeworkFragment();
         } else if (id == R.id.nav_email) {
-
+            fragment = new EmailFragment();
         } else if (id == R.id.nav_schedule) {
-
+            /*Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://210.71.78.163/clash/"));
+            startActivity(browserIntent);*/
+            CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+            CustomTabsIntent customTabsIntent = builder.build();
+            customTabsIntent.launchUrl(this, Uri.parse("http://210.71.78.163/clash/"));
         } else if (id == R.id.nav_info) {
-
+            fragment = new InfoFragment();
         } else if (id == R.id.nav_passwd) {
             fragment = new ChpassFragment();
             String account = navAccount.getText().toString();
             bundle.putString("account", account);
         }
-        setTitle(item.getTitle());
+
+        Fragment newFragment;
         if (fragment != null) {
-            fragment.setArguments(bundle);
+            newFragment = getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName());
+
+
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_frame, fragment);
-            ft.commit();
+            fragment.setArguments(bundle);
 
+
+
+
+            if(mCurrentFragment != newFragment || (mCurrentFragment == null && newFragment == null)){
+                if (mCurrentFragment != null) {
+                    ft.hide(mCurrentFragment);
+                }
+
+                if (newFragment != null) { // fragment is already in activity
+                    if (mCurrentFragment != null)
+                        //Log.e("SAD", "Now: "+mCurrentFragment.toString()+"\nNew: "+newFragment.toString());
+
+
+                    ft.show(newFragment);
+                    mCurrentFragment = newFragment;
+                    Log.e("SAD", "So SAD");
+                }
+                else{ // add fragment to activity
+                    ft.add(R.id.content_frame, fragment, fragment.getClass().getName());
+                    mCurrentFragment = fragment;
+                    Log.e("SAD", "SAD");
+                }
+
+                ft.commit();
+            }
         }
-        Toast.makeText(getApplicationContext(), "你點選了！！", Toast.LENGTH_SHORT).show();
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 }

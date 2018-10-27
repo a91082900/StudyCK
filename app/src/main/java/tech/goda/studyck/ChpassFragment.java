@@ -5,6 +5,7 @@ package tech.goda.studyck;
         import android.net.Uri;
         import android.os.AsyncTask;
         import android.os.Bundle;
+        import android.support.annotation.Nullable;
         import android.support.v4.app.Fragment;
         import android.support.v4.app.FragmentTransaction;
         import android.util.Log;
@@ -38,6 +39,7 @@ public class ChpassFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "ChpassFragment";
 
     // TODO: Rename and change types of parameters
     private EditText account, oldPass,  newPass, newPassConf, code;
@@ -72,11 +74,13 @@ public class ChpassFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e(TAG, "onCreate");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.e(TAG, "onCreateView");
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_chpass, container, false);
         bundle = this.getArguments();
@@ -176,6 +180,7 @@ public class ChpassFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Log.e(TAG, "onAttach");
         /*if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -187,7 +192,56 @@ public class ChpassFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.e(TAG, "OnDetach");
         mListener = null;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e(TAG, "onStart");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e(TAG, "onResume");
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.e(TAG, "onActivityCreated");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.e(TAG, "onStop");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.e(TAG, "onDestroyView");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e(TAG, "onDestroy");
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.e(TAG, "onSaveInstanceState");
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        Log.e(TAG, "onViewStateRestored");
     }
 
     /**
